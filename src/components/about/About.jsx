@@ -1,9 +1,17 @@
 import React from "react";
 import "./about.css";
-import Image from "../../assets/avatar-2.svg";
+import Image from "../../assets/avatar-1.svg";
 import AboutBox from "./AboutBox";
+import { useGithubStats } from "../../hooks/useGithubStats";
 
 const About = () => {
+  const { loading, error, stats } = useGithubStats();
+
+  const langs = stats.topLanguages || [];
+  const l1 = langs[0];
+  const l2 = langs[1];
+  const l3 = langs[2];
+
   return (
     <section className="about container section" id="about">
       <h2 className="section__title">About Me</h2>
@@ -14,9 +22,9 @@ const About = () => {
         <div className="about__data grid">
           <div className="about__info">
             <p className="about__description">
-              I am Bolby Doe, web developer from London, United Kingdom. I have
+              I am Carlos Alberto, Fullstack developer from Rio de Janeiro, Brasil. I have
               rich experience in web site design and building and customization,
-              also I am good at WordPress.
+              also I am good at backend tools.
             </p>
             <a href="" className="btn">
               Download CV
@@ -26,41 +34,62 @@ const About = () => {
           <div className="about__skills grid">
             <div className="skills__data">
               <div className="skills__titles">
-                <h3 className="skills__name">Development</h3>
-                <span className="skills__number">90%</span>
+                <h3 className="skills__name">
+                  {loading ? "Carregando..." : error ? "Falha ao carregar" : l1?.name || "-"}
+                </h3>
+                <span className="skills__number">
+                  {loading ? "..." : error ? "--" : `${l1?.percent ?? 0}%`}
+                </span>
               </div>
 
               <div className="skills__bar">
-                <span className="skills__percentage development"></span>
+                <span
+                  className="skills__percentage lang__1"
+                  style={{ width: `${loading || error ? 0 : l1?.percent ?? 0}%` }}
+                ></span>
               </div>
             </div>
 
             <div className="skills__data">
               <div className="skills__titles">
-                <h3 className="skills__name">UI/UX design</h3>
-                <span className="skills__number">80%</span>
+                <h3 className="skills__name">
+                  {loading ? "Carregando..." : error ? "Falha ao carregar" : l2?.name || "-"}
+                </h3>
+                <span className="skills__number">
+                  {loading ? "..." : error ? "--" : `${l2?.percent ?? 0}%`}
+                </span>
               </div>
 
               <div className="skills__bar">
-                <span className="skills__percentage ui__design"></span>
+                <span
+                  className="skills__percentage lang__2"
+                  style={{ width: `${loading || error ? 0 : l2?.percent ?? 0}%` }}
+                ></span>
               </div>
             </div>
 
             <div className="skills__data">
               <div className="skills__titles">
-                <h3 className="skills__name">Photography</h3>
-                <span className="skills__number">60%</span>
+                <h3 className="skills__name">
+                  {loading ? "Carregando..." : error ? "Falha ao carregar" : l3?.name || "-"}
+                </h3>
+                <span className="skills__number">
+                  {loading ? "..." : error ? "--" : `${l3?.percent ?? 0}%`}
+                </span>
               </div>
 
               <div className="skills__bar">
-                <span className="skills__percentage photography"></span>
+                <span
+                  className="skills__percentage lang__3"
+                  style={{ width: `${loading || error ? 0 : l3?.percent ?? 0}%` }}
+                ></span>
               </div>
             </div>
           </div>
         </div>
       </div>
 
-      <AboutBox />
+      <AboutBox projectsCompleted={loading || error ? null : stats.projectsCompleted} />
     </section>
   );
 };

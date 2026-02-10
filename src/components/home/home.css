@@ -13,6 +13,8 @@
 }
 
 .home__img {
+  width: 250px;
+  height: 250px;
   margin-bottom: 1.5rem;
 }
 
@@ -40,7 +42,7 @@
 
 .scroll__down {
   position: absolute;
-  bottom: 2.5rem;
+  bottom: 0.5rem;
   left: 0;
   width: 100%;
 }

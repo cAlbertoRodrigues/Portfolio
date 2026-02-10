@@ -1,15 +1,11 @@
 import React, { useState } from "react";
 import "./sidebar.css";
-import Logo from "../../assets/logo.svg";
 
 const Sidebar = () => {
   const [toggle, showMenu] = useState(false);
   return (
     <>
     <aside className={toggle ? "aside show-menu" : "aside"}>
-      <a href="#home" className="nav__logo">
-        <img src={Logo} alt="" />
-      </a>
 
       <nav className="nav">
         <div className="nav__menu">
@@ -45,12 +41,6 @@ const Sidebar = () => {
             </li>
 
             <li className="nav__item">
-              <a href="#blog" className="nav__link">
-                <i className="icon-note"></i>
-              </a>
-            </li>
-
-            <li className="nav__item">
               <a href="#contact" className="nav__link">
                 <i className="icon-bubble"></i>
               </a>
@@ -60,7 +50,7 @@ const Sidebar = () => {
       </nav>
 
       <div className="nav__footer">
-        <span className="copyright">&copy; 2022 - 2023.</span>
+        <span className="copyright">&copy; 2023 - 2026.</span>
       </div>
     </aside>
 

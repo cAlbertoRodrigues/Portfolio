@@ -1,4 +1,3 @@
-import React from "react";
 import "./home.css";
 import Me from "../../assets/avatar-1.svg";
 import HeaderSocials from "./HeaderSocials";

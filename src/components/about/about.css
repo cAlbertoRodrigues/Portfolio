@@ -75,8 +75,20 @@
 }
 
 .photography {
-  width: 90%;
-  background-color: rgb(108, 108, 299);
+  width: 60%;
+  background-color: rgb(108, 108, 255);
+}
+
+.lang__1 {
+  background-color: rgb(255, 209, 92);
+}
+
+.lang__2 {
+  background-color: rgb(255, 76, 96);
+}
+
+.lang__3 {
+  background-color: hsl(271, 76%, 53%);
 }
 
 .about__boxes {
@@ -101,9 +113,9 @@
 
 @media screen and (max-width: 1024px) {
   .about__container {
-      grid-template-columns: 720px;
-      justify-content: center;
-      row-gap: 1.875rem;
+    grid-template-columns: 720px;
+    justify-content: center;
+    row-gap: 1.875rem;
   }
 
   .about__data::before {
@@ -120,7 +132,7 @@
 
   .about__box {
     flex-direction: column;
-    row-gap: .5rem;
+    row-gap: 0.5rem;
     text-align: center;
   }
 }

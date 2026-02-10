@@ -6,9 +6,13 @@
     "@testing-library/jest-dom": "^5.16.4",
     "@testing-library/react": "^13.3.0",
     "@testing-library/user-event": "^13.5.0",
+    "cors": "^2.8.6",
+    "express": "^5.2.1",
+    "multer": "^2.0.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-scripts": "5.0.1",
+    "sharp": "^0.34.5",
     "swiper": "^8.3.1",
     "web-vitals": "^2.1.4"
   },
@@ -16,6 +20,9 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
+    "add:project": "node api/scripts/add-project.js",
+    "delete:project": "node api/scripts/delete-project.js",
+    "dev": "node api/server.js",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {

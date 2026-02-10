@@ -22,7 +22,7 @@ const data = [
   {
     id: 3,
     image: Image3,
-    title: "Photography",
+    title: "Backend Development",
     description:
       "Lorem ipsum dolor sit amet consectetuer adipiscing elit         aenean commodo ligula eget.",
   },
