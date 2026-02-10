@@ -10,21 +10,21 @@ const data = [
     image: Image1,
     title: "UI/UX design",
     description:
-      "Lorem ipsum dolor sit amet consectetuer adipiscing elit         aenean commodo ligula eget.",
+      "Creation of intuitive interfaces focused on user experience, accessibility, and usability, combining aesthetics with functionality.",
   },
   {
     id: 2,
     image: Image2,
     title: "Web Development",
     description:
-      "Lorem ipsum dolor sit amet consectetuer adipiscing elit         aenean commodo ligula eget.",
+      "Development of modern, responsive, and high-performance websites and applications, following industry best practices.",
   },
   {
     id: 3,
     image: Image3,
     title: "Backend Development",
     description:
-      "Lorem ipsum dolor sit amet consectetuer adipiscing elit         aenean commodo ligula eget.",
+      "Building robust, secure, and scalable systems, with well-structured APIs and efficient service integration.",
   },
 ];
 

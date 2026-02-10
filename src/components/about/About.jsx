@@ -22,9 +22,7 @@ const About = () => {
         <div className="about__data grid">
           <div className="about__info">
             <p className="about__description">
-              I am Carlos Alberto, Fullstack developer from Rio de Janeiro, Brasil. I have
-              rich experience in web site design and building and customization,
-              also I am good at backend tools.
+              I am Carlos Alberto, a Full-Stack Developer from Rio de Janeiro, Brazil. I have solid experience in web design, application development, and customization, as well as strong skills in backend technologies.
             </p>
             <a href="" className="btn">
               Download CV
