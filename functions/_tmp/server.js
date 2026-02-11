@@ -45,7 +45,7 @@ function normalizeDriveUrl(input) {
   if (!input || typeof input !== "string") return input;
   const s = input.trim();
 
-  const m1 = s.match(/drive\.google\.com\/file\/d\/([^/]+)\//i);
+  const m1 = s.match(/drive\.google\.com\/file\/d\/([^/]+)\
   if (m1?.[1]) return `https://drive.google.com/uc?export=view&id=${m1[1]}`;
 
   const m2 = s.match(/[?&]id=([^&]+)/i);
@@ -161,7 +161,7 @@ app.post("/projects", async (req, res) => {
     let finalThumbUrl = "";
     let originalUrl = normalizedImage;
 
-    const isUrl = /^https?:\/\//i.test(normalizedImage);
+    const isUrl = /^https?:\/\
 
     if (isUrl) {
       const ok = await isProbablyImageUrl(normalizedImage);

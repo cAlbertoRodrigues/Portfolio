@@ -73,7 +73,7 @@ async function createProject({ title, category, link, image }) {
 
     let imageValue = imageInput;
 
-    if (!/^https?:\/\//i.test(imageInput)) {
+    if (!/^https?:\/\
       const up = await uploadImage(imageInput);
       imageValue = up.thumbUrl;
     }

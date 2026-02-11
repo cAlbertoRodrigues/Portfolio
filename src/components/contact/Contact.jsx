@@ -10,7 +10,7 @@ const Contact = () => {
   });
 
   const [status, setStatus] = useState({
-    type: "idle", // idle | loading | success | error
+    type: "idle",
     msg: "",
   });
 

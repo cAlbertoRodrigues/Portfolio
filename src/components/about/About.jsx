@@ -24,9 +24,9 @@ const About = () => {
             <p className="about__description">
               I am Carlos Alberto, a Full-Stack Developer from Rio de Janeiro, Brazil. I have solid experience in web design, application development, and customization, as well as strong skills in backend technologies.
             </p>
-            <a href="" className="btn">
+            <button type="button" className="btn">
               Download CV
-            </a>
+            </button>
           </div>
 
           <div className="about__skills grid">

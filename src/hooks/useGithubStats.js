@@ -132,7 +132,7 @@ export function useGithubStats() {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [cachedStats, isFresh]);
 
   return { loading, error, stats };
 }
