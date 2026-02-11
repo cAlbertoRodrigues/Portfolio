@@ -10,8 +10,6 @@ const app = express();
 app.use(cors());
 app.use(express.json({ limit: "2mb" }));
 
-const ALLOWED = new Set(["projeto", "criativo", "software"]);
-
 const uploadsDir = path.join(__dirname, "uploads");
 const thumbsDir = path.join(uploadsDir, "thumbs");
 
@@ -20,21 +18,22 @@ if (!fs.existsSync(thumbsDir)) fs.mkdirSync(thumbsDir, { recursive: true });
 
 app.use("/uploads", express.static(uploadsDir));
 
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => cb(null, uploadsDir),
-  filename: (req, file, cb) => {
-    const ext = path.extname(file.originalname || "").toLowerCase() || ".png";
-    cb(null, `${crypto.randomUUID()}${ext}`);
-  },
-});
-
 const upload = multer({
-  storage,
+  storage: multer.diskStorage({
+    destination: (req, file, cb) => cb(null, uploadsDir),
+    filename: (req, file, cb) => {
+      const ext = path.extname(file.originalname || "").toLowerCase() || ".png";
+      cb(null, `${crypto.randomUUID()}${ext}`);
+    },
+  }),
   limits: { fileSize: 10 * 1024 * 1024 },
 });
 
 const CARD_W = 900;
 const CARD_H = 600;
+
+const ALLOWED = new Set(["projeto", "criativo", "software"]);
+let projects = [];
 
 function toPublicUrl(filePathAbs) {
   const rel = path.relative(uploadsDir, filePathAbs).replace(/\\/g, "/");
@@ -45,7 +44,7 @@ function normalizeDriveUrl(input) {
   if (!input || typeof input !== "string") return input;
   const s = input.trim();
 
-  const m1 = s.match(/drive\.google\.com\/file\/d\/([^/]+)\
+  const m1 = s.match(/drive\.google\.com\/file\/d\/([^/]+)/i);
   if (m1?.[1]) return `https://drive.google.com/uc?export=view&id=${m1[1]}`;
 
   const m2 = s.match(/[?&]id=([^&]+)/i);
@@ -64,11 +63,10 @@ async function isProbablyImageUrl(url) {
   } catch {}
 
   try {
-    const res = await fetch(url, { method: "GET", redirect: "follow" });
-    const ct = res.headers.get("content-type") || "";
+    const res = await fetch(url, { redirect: "follow" });
     if (!res.ok) return false;
-    if (ct.toLowerCase().startsWith("image/")) return true;
-    return false;
+    const ct = res.headers.get("content-type") || "";
+    return ct.toLowerCase().startsWith("image/");
   } catch {
     return false;
   }
@@ -84,11 +82,13 @@ async function downloadToTemp(url) {
   const ct = (res.headers.get("content-type") || "").toLowerCase();
   if (!ct.startsWith("image/")) throw new Error("URL não é imagem");
 
-  const ext =
-    ct.includes("png") ? ".png" :
-    ct.includes("jpeg") || ct.includes("jpg") ? ".jpg" :
-    ct.includes("webp") ? ".webp" :
-    ".png";
+  const ext = ct.includes("png")
+    ? ".png"
+    : ct.includes("jpeg") || ct.includes("jpg")
+    ? ".jpg"
+    : ct.includes("webp")
+    ? ".webp"
+    : ".png";
 
   const buf = Buffer.from(await res.arrayBuffer());
   const tmpPath = path.join(uploadsDir, `${crypto.randomUUID()}${ext}`);
@@ -97,8 +97,7 @@ async function downloadToTemp(url) {
 }
 
 async function makeThumbFromFile(fileAbsPath) {
-  const thumbName = `${crypto.randomUUID()}.jpg`;
-  const thumbAbsPath = path.join(thumbsDir, thumbName);
+  const thumbAbsPath = path.join(thumbsDir, `${crypto.randomUUID()}.jpg`);
 
   await sharp(fileAbsPath)
     .resize(CARD_W, CARD_H, { fit: "cover", position: "center" })
@@ -107,12 +106,6 @@ async function makeThumbFromFile(fileAbsPath) {
 
   return thumbAbsPath;
 }
-
-let projects = [];
-
-app.get("/", (req, res) => {
-  res.send("API OK. Use /projects, /upload e /uploads/...");
-});
 
 app.get("/projects", (req, res) => {
   res.json(projects);
@@ -158,32 +151,29 @@ app.post("/projects", async (req, res) => {
 
     const normalizedImage = normalizeDriveUrl(image);
 
-    let finalThumbUrl = "";
-    let originalUrl = normalizedImage;
-
-    const isUrl = /^https?:\/\
-
-    if (isUrl) {
-      const ok = await isProbablyImageUrl(normalizedImage);
-      if (!ok) return res.status(400).json({ error: "image precisa ser uma URL de imagem" });
-
-      const tmp = await downloadToTemp(normalizedImage);
-      const thumbAbs = await makeThumbFromFile(tmp);
-
-      try { fs.unlinkSync(tmp); } catch {}
-
-      finalThumbUrl = toPublicUrl(thumbAbs);
-    } else {
-      return res.status(400).json({ error: "image precisa ser URL (ou use /upload)" });
+    if (!/^https?:\/\//i.test(normalizedImage)) {
+      return res
+        .status(400)
+        .json({ error: "image precisa ser URL (ou use /upload)" });
     }
+
+    const ok = await isProbablyImageUrl(normalizedImage);
+    if (!ok)
+      return res.status(400).json({ error: "image precisa ser uma URL de imagem" });
+
+    const tmp = await downloadToTemp(normalizedImage);
+    const thumbAbs = await makeThumbFromFile(tmp);
+    try {
+      fs.unlinkSync(tmp);
+    } catch {}
 
     const item = {
       id: crypto.randomUUID(),
       title: title.trim(),
       category,
       link: link.trim(),
-      image: finalThumbUrl,
-      originalImage: originalUrl,
+      image: toPublicUrl(thumbAbs),
+      originalImage: normalizedImage,
     };
 
     projects = [item, ...projects];
@@ -194,10 +184,8 @@ app.post("/projects", async (req, res) => {
 });
 
 app.delete("/projects/:id", (req, res) => {
-  const { id } = req.params;
-
   const before = projects.length;
-  projects = projects.filter((p) => p.id !== id);
+  projects = projects.filter((p) => p.id !== req.params.id);
 
   if (projects.length === before) {
     return res.status(404).json({ error: "Projeto não encontrado" });
@@ -206,4 +194,4 @@ app.delete("/projects/:id", (req, res) => {
   res.status(204).end();
 });
 
-app.listen(3333, () => console.log("API on http://localhost:3333"));
+app.listen(3333);
